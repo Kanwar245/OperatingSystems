@@ -8,12 +8,12 @@ CSCC69/369 U of T
 <h2>Outline</h2>
 
 <ol>
-<li> <a href="c69_p1.shtml#intro">Introduction</a> </li>
-<li> <a href="c69_p1.shtml#beg">Beginning the project</a></li>
-<li> <a href="c69_p1.shtml#cr">Code Reading</a></li>
-<li> <a href="c69_p1.shtml#t1">Task 1</a></li>
-<li> <a href="c69_p1.shtml#t2">Task 2</a></li>
-<li> <a href="c69_p1.shtml#t3">Task 3</a></li>
+<li> Introduction</li>
+<li> Beginning the project</li>
+<li> Code Reading</li>
+<li> Task 1</li>
+<li> Task 2</li>
+<li> Task 3</li>
 
 </ol>
 
