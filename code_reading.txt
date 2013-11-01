@@ -1,0 +1,58 @@
+==================================================================== CODE READING QUESTIONS ====================================================================================
+
+Ques 1. What happens to a thread when it exits (i.e., calls thread_exit() )? What about when it sleeps?
+Ans. When a thread exits, unneeded portions of the thread structure are immediately removed (the remaining are removed when thread_destroy() is called when it
+turns into a zombie). When a thread sleeps, it is added to the wait channel list, and the channel is locked. When the thread is once more runnable, it will be
+unlocked (it just busy waits until then).
+
+Ques 2. What function(s) handle(s) a context switch?
+Ans. The functions that handle a context switch are: (1) thread_switch(), (2) thread_exit(), (3) thread_yield(), (4) wchan_sleep(), (5) thread_startup(), and (6) cpu_hatch().
+
+Ques 3. How many thread states are there? What are they?
+Ans. There are 4 states and they are: (1) S_READY, (2) S_RUN, (3) S_SLEEP, and (4) S_ZOMBIE.
+
+Ques 4. What does it mean to turn interrupts off? How is this accomplished? Why is it important to turn off interrupts in the thread subsystem code?
+Ans. It means that interupts will not get handled by the handler (it doesn't get called). This is accomplished by using splhigh and to turn them back on, spl0 
+is called (set priority level high and low, respectively). It is important to turn off interrupts in the thread subsystem code because we want to be certain tha
+thread operations can be run and that they are not malfunctioning during execution.
+
+Ques 5. What happens when a thread wakes up another thread? How does a sleeping thread get to run again?
+Ans. When a thread wakes up another, it deletes the sleeping thread from the queue. It then calls thread_make_runnable on that thread, which appends it to the runqueue. 
+The sleeping thread is able to run once more when thread_switch is called, and the scheduler returns that thread.
+
+Ques 6. Semaphores are implemented using spinlocks. Where are spinlocks implemented? And what does it mean to get the data for a spinlock?
+Ans. Spinlocks have been declared in kern/include/spinlock.h and implemented in kern/thread/spinlock.c. To get the data for a spinlock, it means to use spinlock_acquire()
+to get the lock. First disable interrupts (otherwise, if we get a timer interrupt we might come back to this lock and deadlock), then use a machine-level atomic
+operation to wait for the lock to be free.
+
+Ques 7. Are OS/161 semaphores "strong" or "weak"?
+Ans. They are weak since in kern/thread/synch.c we are not implementing a strict FIFO policy of the threads going into the semaphore. Thus, the order in which processes
+are removed from the queue is not absolute.
+
+Ques 8. Why does the lock API in OS/161 provide lock_do_i_hold(), but not lock_get_holder() ?
+Ans. It does os because we are not concerned with the lock holder unless the lock is being held by the thread, and it again attempts to get it again.
+
+Ques 9. What are the ELF magic numbers?
+Ans. Magic numbers are just the first few bits of a file to be checked to verify file type - saving the trouble of analyzing all file structures. For ELF, they are
+0x7f, 'E', 'L', 'F', found so in kern/include/elf.h.
+
+Ques 10. What is the difference between UIO_USERISPACE and UIO_USERSPACE? When should one use UIO_SYSSPACE instead?
+Ans. UIO_USERISPACE and UIO_USERSPACE differ because the former is used to specify that the memory segment at the user level is indeed executable. One should use
+UIO_SYSSPACE when the memeory segment and the transfer of the data is completely in the kernel space.
+
+Ques 11. Why can the struct uio that is used to read in a segment be allocated on the stack in load_segment() (i.e., where does the memory read actually go)?
+Ans. It can be allocated on the stack because the uio pointer that is passed is type-set to a node, essentially placing items in a list that while it loads older 
+processes, also has new processes added to the front.
+
+Ques 12. In runprogram(), why is it important to call vfs_close() before going to usermode?
+Ans. Because vfs_open() is called in runprogram() and every time the file is opened, no new resources are being hogged but new open counters and references to the file
+are created. If vfs_close() is not called every single time vfs_open() is called before going to usermode, it will result in the file's resources never being released
+since once in usermode, we do not come back to runprogram(). This obviously leads to a memory leak so it is essential that vfs_close() be called before going to usermode.
+
+Ques 13. What function forces the processor to switch into usermode? Is this function machine dependent?
+Ans. The function that forces the processor to switch into usermode is mips_usermode in /src/kern/arch/mips/lacore/trap.c but it is triggered by asm_usermode. Yes, the
+function is machine dependent as the various CPU registers necessary to place the processor in usermode are handled by it.
+
+Ques 14. The mips_trap function handles all exceptions. Is it possible to determine whether the exception being handled was triggered during user execution or kernel execution?
+Ans. Yes, it is possible because in mips_trap() function, there exist checks to differentiate between user and kernel exceptions, in addition to numerous unrelated
+exceptions.

@@ -1,0 +1,33 @@
+#!/bin/sh
+
+MAKEPRG=bmake
+MAKEFLAGS="-j4"
+
+# A Simple bash script to configure and compile os/161
+echo "Configuring your tree for the machine on which you are working"
+cd ~/csc369/a1/src
+./configure
+
+echo
+echo "Configuring kernel named ASST1"
+cd kern/conf
+./config ASST1
+
+echo
+echo "Building the ASST1 kernel"
+cd ../compile/ASST1
+${MAKEPRG} ${MAKEFLAGS} depend || exit
+${MAKEPRG} ${MAKEFLAGS} || exit 
+
+echo
+echo "Installing ASST1 kernel"
+${MAKEPRG} ${MAKEFLAGS} install || exit
+
+echo
+echo "Building user-level utilities"
+cd ../../..
+#bmake clean
+#${MAKEPRG} ${MAKEFLAGS} || exit
+#${MAKEPRG} ${MAKEFLAGS} install ||exit
+ctags -R .
+
