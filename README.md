@@ -1,4 +1,5 @@
-OperatingSystems
+Operating Systems
+Project 1
 ================
 
 CSCC69/369 U of T
