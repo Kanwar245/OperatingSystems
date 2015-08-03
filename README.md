@@ -1,10 +1,6 @@
-Operating Systems
-Project 1
-================
+# CSCC69 Project 1
 
-CSCC69/369 U of T
-
-
+Summer 2013 
 
 <h2>Outline</h2>
 
